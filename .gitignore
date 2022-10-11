@@ -1,0 +1,14 @@
+SightseerApp/node_modules
+SightseerApp/.expo/
+SightseerApp/dist/
+SightseerApp/npm-debug.*
+SightseerApp/*.jks
+SightseerApp/*.p8
+SightseerApp/*.p12
+SightseerApp/*.key
+SightseerApp/.mobileprovision
+SightseerApp/*.orig.*
+SightseerApp/web-build/
+
+# macOS
+.DS_Store
