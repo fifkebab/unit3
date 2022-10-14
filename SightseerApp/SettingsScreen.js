@@ -1,4 +1,6 @@
 import { Button, StyleSheet, Text, Image, TouchableOpacity, View } from 'react-native';
+import SvgUri from 'react-native-svg-uri';
+import { Ear } from './images';
 
 export const SettingsScreen = () => {
     return (
@@ -7,11 +9,10 @@ export const SettingsScreen = () => {
                 <Text style={Settings.headerText}>Settings</Text>
             </View>
 
-            <View>
+            <View style={Settings.buttonContainer}>
                 <View style={Settings.settingsButton}>
-                    <Image 
-                    source={require("./images/ear.svg")}
-                    />
+                    <Ear />
+                    <Text style={Settings.text}>Read Aloud</Text>
                 </View>
 
 
@@ -24,7 +25,8 @@ export const SettingsScreen = () => {
 const Settings = StyleSheet.create({
     background: {
         backgroundColor: "#F2F1F7",
-        marginLeft: 25
+        marginLeft: 25,
+        marginRight: 25
     },
     header: {
         marginTop: 110
@@ -35,5 +37,17 @@ const Settings = StyleSheet.create({
     },
     settingsButton: {
         backgroundColor: 'white',
+        height: 75,
+        width: '100%',
+        borderRadius: 20,
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    text: {
+        fontSize: 25,
+        fontWeight: "500"
+    },
+    buttonContainer: {
+        marginTop: 25
     }
 })
