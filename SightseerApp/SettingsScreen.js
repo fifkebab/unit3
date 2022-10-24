@@ -1,4 +1,4 @@
-import { Button, StyleSheet, Text, Image, TouchableOpacity, View } from 'react-native';
+import { Button, StyleSheet, Text, Image, TouchableOpacity, View, Platform } from 'react-native';
 import SvgUri from 'react-native-svg-uri';
 import { Ear } from './images';
 
@@ -11,7 +11,7 @@ export const SettingsScreen = () => {
 
             <View style={Settings.buttonContainer}>
                 <View style={Settings.settingsButton}>
-                    <Ear />
+                    <Ear style={StyleSheet.buttonImage} strokeWidth={2.5}/>
                     <Text style={Settings.text}>Read Aloud</Text>
                 </View>
 
@@ -32,8 +32,12 @@ const Settings = StyleSheet.create({
         marginTop: 110
     },
     headerText: {
-        fontSize: 45,
-        fontWeight: "800"
+        fontSize: Platform.select({
+            ios: 37
+        }),
+        fontWeight: Platform.select({
+            ios: '500'
+        })
     },
     settingsButton: {
         backgroundColor: 'white',
@@ -44,10 +48,22 @@ const Settings = StyleSheet.create({
         alignItems: 'center'
     },
     text: {
-        fontSize: 25,
-        fontWeight: "500"
+        fontSize: Platform.select({
+            ios: 20, 
+        }),
+        fontWeight: Platform.select({
+            ios: '500'
+        }),
+        marginStart: Platform.select({
+            ios: 35
+        })
     },
     buttonContainer: {
         marginTop: 25
+    },
+    buttonImage: {
+        marginStart: Platform.select({
+            ios: 45
+        })
     }
 })
