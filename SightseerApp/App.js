@@ -4,8 +4,11 @@ import CameraScreen from './CameraScreen';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SettingsScreen } from './SettingsScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ResutsScreen } from './ResultsScreen';
 
 const Stack = createNativeStackNavigator();
+
+export const Host = "https://11ea-86-29-84-125.eu.ngrok.io";
 
 const App = () => {
   const SettingsCheck = async() => {
@@ -39,6 +42,12 @@ const App = () => {
         <Stack.Screen
             name="Settings"
             component={SettingsScreen}
+            options={{}}
+        />
+
+        <Stack.Screen
+            name="Results"
+            component={ResutsScreen}
             options={{}}
         />
       </Stack.Navigator>

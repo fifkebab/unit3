@@ -1,4 +1,4 @@
-import { Button, StyleSheet, Text, Image, TouchableOpacity, View, Platform, Alert } from 'react-native';
+import { Button, StyleSheet, Text, Image, TouchableOpacity, View, Platform, Alert, Animated, Pressable } from 'react-native';
 import SvgUri from 'react-native-svg-uri';
 import { Contrast, Ear, ViewIcon, Focus, CheckmarkIcon } from './images';
 import React, { useState } from 'react';
@@ -31,50 +31,56 @@ export const SettingsScreen = () => {
         await AsyncStorage.setItem('Settings', JSON.stringify(exportedWorker));
     }
 
+    const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
     return (
         <View style={Settings.background}>
             <View style={Settings.header}>
                 <Text style={Settings.headerText}>Settings</Text>
             </View>
 
-            <View style={Settings.buttonContainer}>
+            <Animated.View style={Settings.buttonContainer}>
 
-                <TouchableOpacity 
+                <Pressable 
                 style={Settings.settingsButton}
                 onPress={() => { toggleSetting('read-aloud') }}
+                
                 >
                     <Ear style={StyleSheet.buttonImage} strokeWidth={2.5}/>
                     <Text style={Settings.text}>Read Aloud</Text>
                     <CheckMark checked={SettingsWorker['read-aloud']}/>
-                </TouchableOpacity>
+                </Pressable>
 
-                <TouchableOpacity 
+                <Pressable 
                 style={Settings.settingsButton} 
                 onPress={() => { toggleSetting('high-contrast') }}
+                 
                 >
                     <Contrast style={StyleSheet.buttonImage} strokeWidth={2.5}/>
                     <Text style={Settings.text}>High Contrast</Text>
                     <CheckMark checked={SettingsWorker['high-contrast']}/>
-                </TouchableOpacity>
+                </Pressable>
 
-                <TouchableOpacity 
+                <Pressable 
                 style={Settings.settingsButton} 
                 onPress={() => { toggleSetting('transparency')}}
+                
                 >
                     <ViewIcon style={StyleSheet.buttonImage} strokeWidth={2.5}/>
                     <Text style={Settings.text}>Transparency</Text>
                     <CheckMark checked={SettingsWorker['transparency']}/>
-                </TouchableOpacity>
+                </Pressable>
 
-                <TouchableOpacity 
+                <Pressable 
                 style={Settings.settingsButton} 
                 onPress={() => { toggleSetting('scan-automatically')}}
+                
                 >
                     <Focus style={StyleSheet.buttonImage} strokeWidth={2.5}/>
                     <Text style={Settings.text}>Scan Automatically</Text>
                     <CheckMark checked={SettingsWorker['scan-automatically']}/>
-                </TouchableOpacity>
-            </View>
+                </Pressable>
+            </Animated.View>
 
         </View>
     )

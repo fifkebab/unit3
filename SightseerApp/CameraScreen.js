@@ -1,16 +1,41 @@
 import { Camera, CameraType } from 'expo-camera';
-import { useState } from 'react';
-import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { Button, Pressable, Settings, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import { BlurView, VibrancyView } from "@react-native-community/blur";
 import { LinearGradient } from 'expo-linear-gradient';
-
+import { automaticScan, startScan } from './scan/scan'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export default function CameraScreen({navigation}) {
   const [type, setType] = useState(CameraType.back);
   const [permission, requestPermission] = Camera.useCameraPermissions();
+  const [statusText, setStatusText] = useState("Tap anywhere to scan");
+  const [SettingsWorker, setSettings] = useState({});
+  const [result, setResult] = useState({});
+
+  var camera;
+
+  const SettingsRead = () => {
+    AsyncStorage.getItem('Settings').then(async(value) => {
+      setSettings(value);
+      const localSettings = JSON.parse(value);
+      // console.log(value["scan-automatically"] == true);
+
+      if (localSettings["scan-automatically"] == true) {
+        console.log("Settings status text...");
+        automaticScan(camera, setStatusText);
+      }
+    })
+    // setSettings(JSON.parse(await AsyncStorage.getItem('Settings')));
+
+  }
+
+  useEffect(() => {
+      SettingsRead();
+  }, [])
 
   if (!permission) {
     // Camera permissions are still loading
@@ -21,7 +46,7 @@ export default function CameraScreen({navigation}) {
     // Camera permissions are not granted yet
     return (
       <View style={styles.container}>
-        <Text style={{ textAlign: 'center' }}>We need your permission to show the camera</Text>
+        <Text style={{ textAlign: 'center' }}>Sightseer requires the camera in order to see the environment around you.</Text>
         <Button onPress={requestPermission} title="grant permission" />
       </View>
     );
@@ -30,21 +55,38 @@ export default function CameraScreen({navigation}) {
   function toggleCameraType() {
     setType(current => (current === CameraType.back ? CameraType.front : CameraType.back));
   }
-
+  
   return (
     <View style={styles.container}>
       {/* <BlurView style={styles.statusBarBlur} blurType="light" blurAmount={8} /> */}
-      <Camera style={styles.camera} type={type}>
-        <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.settingsButton} onPress={() => { navigation.navigate("Settings") }}>
-              <Text style={styles.text}>Settings</Text>
-            </TouchableOpacity>
-        </View>
+      <Pressable 
 
-        <LinearGradient colors={['rgba(0, 0, 0, 0)', 'rgba(0, 0, 0, 0.5)']} style={bottomBar.container}>
-            <Text style={bottomBar.barText}>Tap anywhere to scan</Text>
-        </LinearGradient>
-      </Camera>
+      style={styles.container}
+      onPress={() => {
+        startScan(camera, setStatusText, navigation);
+      }}>
+        <Camera 
+          style={styles.camera} 
+          type={type} 
+          ref={(ref) => { camera = ref; }} 
+          >
+          <View style={styles.buttonContainer}>
+              <TouchableOpacity style={styles.settingsButton} onPress={() => { navigation.navigate("Settings") }}>
+                <Text style={styles.text}>Settings</Text>
+              </TouchableOpacity>
+          </View>
+
+          <LinearGradient colors={['rgba(0, 0, 0, 0)', 'rgba(0, 0, 0, 0.5)']} style={bottomBar.container}>
+            <View>
+              <Text style={bottomBar.barText}>{statusText}</Text>
+            </View>
+          </LinearGradient>
+
+          <View>
+
+          </View>
+        </Camera>
+      </Pressable>
     </View>
   );
 }

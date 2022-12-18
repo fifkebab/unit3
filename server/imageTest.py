@@ -1,12 +1,16 @@
 from importlib.resources import path
-import torch, os
+import torch
+import os
+import base64
 
 from flask import Flask, redirect, request, url_for, send_file
 app = Flask(__name__)
 
+
 @app.route('/')
 def hello_world():
-    return 'Hello, World!'
+    return 'Pong'
+
 
 @app.route('/testrun')
 def test_run():
@@ -23,18 +27,26 @@ def test_run():
     results.print()
 
     results.xyxy[0]  # img1 predictions (tensor)
+
     return str(results.pandas().xyxy[0])  # img1 predictions (pandas)
+
 
 @app.route('/scan', methods=['POST'])
 def upload_file():
     uploaded_file = request.files['file']
     if uploaded_file.filename != '':
-        uploaded_file.save(os.path.join("images",uploaded_file.filename))
-        # Model
-        model = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
+        extension = uploaded_file.filename.split('.')[1]
+        uuid = base64.b64encode(os.urandom(16)).decode(
+            'utf-8').replace("=", "").replace("+", "").replace("/", "")
+        print(uuid)
 
+        uploaded_file.save(os.path.join("images", f"{uuid}.{extension}"))
+        # Model
+        model = torch.hub.load('ultralytics/yolov5',
+                               'yolov5s', pretrained=True)
         # Images
-        imgs = [f"http://localhost:5000/images/{uploaded_file.filename}"]  # batch of images
+        # batch of images
+        imgs = [f"http://localhost:5000/images/{uuid}.{extension}"]
 
         # Inference
         results = model(imgs)
@@ -42,12 +54,16 @@ def upload_file():
         # Results
         results.print()
 
-        results.xyxy[0]  # img1 predictions (tensor)
-        return str(results.pandas().xyxy[0])  # img1 predictions (pandas)
+        os.remove(os.path.join("images", f"{uuid}.{extension}"))
+
+        # img1 predictions (pandas)
+        return str(results.pandas().xyxy[0].to_json())
+
 
 @app.route('/images/<imagename>')
 def image_serve(imagename):
-    return send_file(os.path.join('images',imagename))
+    return send_file(os.path.join('images', imagename))
+
 
 if __name__ == '__main__':
     app.run(host='localhost', port=5000)

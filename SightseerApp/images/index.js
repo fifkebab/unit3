@@ -47,12 +47,12 @@ export const ViewIcon = (props) => {
 
 export const Focus = (props) => {
     return (
-        <Svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
-            <Path d="M11.6594 15.4379C13.2274 15.4379 14.4986 14.1369 14.4986 12.532C14.4986 10.927 13.2274 9.62598 11.6594 9.62598C10.0914 9.62598 8.82031 10.927 8.82031 12.532C8.82031 14.1369 10.0914 15.4379 11.6594 15.4379Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <Path d="M3.14209 7.68872V5.7514C3.14209 5.2376 3.3415 4.74483 3.69646 4.38151C4.05142 4.0182 4.53285 3.81409 5.03484 3.81409H6.92759" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <Path d="M16.3914 3.81409H18.2841C18.7861 3.81409 19.2675 4.0182 19.6225 4.38151C19.9774 4.74483 20.1769 5.2376 20.1769 5.7514V7.68872" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <Path d="M20.1769 17.3752V19.3126C20.1769 19.8264 19.9774 20.3191 19.6225 20.6824C19.2675 21.0458 18.7861 21.2499 18.2841 21.2499H16.3914" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <Path d="M6.92759 21.2499H5.03484C4.53285 21.2499 4.05142 21.0458 3.69646 20.6824C3.3415 20.3191 3.14209 19.8264 3.14209 19.3126V17.3752" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <Svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <Path d="M11.6594 15.4379C13.2274 15.4379 14.4986 14.1369 14.4986 12.532C14.4986 10.927 13.2274 9.62598 11.6594 9.62598C10.0914 9.62598 8.82031 10.927 8.82031 12.532C8.82031 14.1369 10.0914 15.4379 11.6594 15.4379Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" {...props}/>
+            <Path d="M3.14209 7.68872V5.7514C3.14209 5.2376 3.3415 4.74483 3.69646 4.38151C4.05142 4.0182 4.53285 3.81409 5.03484 3.81409H6.92759" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" {...props}/>
+            <Path d="M16.3914 3.81409H18.2841C18.7861 3.81409 19.2675 4.0182 19.6225 4.38151C19.9774 4.74483 20.1769 5.2376 20.1769 5.7514V7.68872" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" {...props}/>
+            <Path d="M20.1769 17.3752V19.3126C20.1769 19.8264 19.9774 20.3191 19.6225 20.6824C19.2675 21.0458 18.7861 21.2499 18.2841 21.2499H16.3914" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" {...props}/>
+            <Path d="M6.92759 21.2499H5.03484C4.53285 21.2499 4.05142 21.0458 3.69646 20.6824C3.3415 20.3191 3.14209 19.8264 3.14209 19.3126V17.3752" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" {...props}/>
         </Svg>
     )
 }
@@ -62,6 +62,23 @@ export const CheckmarkIcon = (props) => {
     return (
         <Svg width="18" height="13" viewBox="0 0 18 13" fill="none" xmlns="http://www.w3.org/2000/svg">
             <Path d="M17 1L6 12L1 7" {...props} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </Svg>
+    )
+}
+
+export const ChevronRight = (props) => {
+    return (
+        <Svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <Path d="M9 18L15 12L9 6" {...props} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </Svg>
+    )
+}
+
+export const Restart = (props) => {
+    return (
+        <Svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <Path d="M21 2V8H15" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" {...props}/>
+            <Path d="M21 13C20.7877 15.006 19.9077 16.8824 18.5011 18.3283C17.0946 19.7741 15.2431 20.7056 13.2438 20.9731C11.2445 21.2406 9.21321 20.8288 7.476 19.8036C5.73879 18.7785 4.39634 17.1994 3.66405 15.3199C2.93177 13.4404 2.85212 11.3693 3.43788 9.4391C4.02364 7.50888 5.24085 5.8314 6.89418 4.67583C8.54752 3.52026 10.5411 2.95361 12.5551 3.0668C14.5691 3.17999 16.4866 3.96647 18 5.30002L21 8.00002" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" {...props}/>
         </Svg>
     )
 }
