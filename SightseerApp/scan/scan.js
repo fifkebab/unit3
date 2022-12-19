@@ -1,4 +1,6 @@
 import { Host } from "../App";
+import { speakVoice } from "../ResultsScreen";
+import * as ImageManipulator from 'expo-image-manipulator';
 
 export const startScan = async(cameraRef, setScanText, navigation) => {
     console.log("Scanning...");
@@ -25,22 +27,57 @@ export const startScan = async(cameraRef, setScanText, navigation) => {
 
 
 export const automaticScan = (cameraRef, setScanText) => {
-    setScanText("Scanning automatically...");
+    // Take a photo of the viewfinder
+    cameraRef.takePictureAsync({ onPictureSaved: async(photo) => {
+        console.log("Picture saved!");
+
+        // Resize the photo to 360x480 for better performance (automatic only)
+        const manipResult = await ImageManipulator.manipulateAsync(
+            photo.uri,
+            [{ resize: { width: 360, height: 480 } }],
+            { format: 'jpeg' }
+            );
+        console.log("Picture manipulated!");
+
+        // Send the photo to the server
+        const imageResults = await sendImage(manipResult);
+
+        if (imageResults == false) {
+            // If there's no internet connection, display an error message, this is because the image results are false
+            setScanText("No internet connection.")
+        } else {
+            // Display the results, and get only the names of the items
+            // Speak the names of the items
+            const namesOnly = imageResults.map((item) => item.name);
+            setScanText(namesOnly.join(", "));
+            speakVoice("short", false, namesOnly.join(", "));
+        }
+        setTimeout(() => {
+            // Repeat the process every 2 seconds
+            automaticScan(cameraRef, setScanText);
+        }, 2000);
+    }});
 }
 
 
 const sendImage = async (image) => {
+    // Check if the user is connected to the internet and not behind a captive portal
     const captiveCheck = await fetch(`${Host}/`);
     const captiveData = await captiveCheck.text();
-
+    
     if (captiveData != "Pong") {
+        // If the result isn't the same, the connection isn't secure, and the user is probably behind a captive portal
         alert("Connect to the internet and try again.");
+        // Do not continue, it is unsafe
         return false;
     }
 
+    // Create a new formdata object
     let formdata = new FormData();
+    // Add the image to the formdata object
     formdata.append("file", { uri: image.uri, name: "image.jpg", type: "image/jpg" });
 
+    // Start a new POST request to the server (REST API)
     const request = await fetch(`${Host}/scan`, {
         method: 'POST',
         body: formdata,
@@ -48,10 +85,15 @@ const sendImage = async (image) => {
             'Content-Type': 'multipart/form-data',
         }
     })
+
+    // If the request is successful, return the results
     if (request.status == 200) {
+        // Convert the results to a more readable format
         const data = await request.json();
+
+        // Convert the data to a more managable format
         var newFormat = [];
-        // console.log(data);
+    
         Object.keys(data.class).forEach((item, index) => {
             newFormat.push({
                 "class": data.class[index],
@@ -65,6 +107,7 @@ const sendImage = async (image) => {
             })
         })
 
+        // Return the results
         return newFormat
     }
 }

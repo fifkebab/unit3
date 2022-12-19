@@ -17,17 +17,22 @@ export const SettingsScreen = () => {
     SettingsLoad()
 
     const toggleSetting = async(setting) => {
-        console.log(`Toggling ${setting}`);
+        // Get the current settings;
         const exportedWorker = SettingsWorker;
 
+        // Check if the setting is on or off;
         if (!exportedWorker[setting]) {
+            // If it's off, turn it on;
             exportedWorker[setting] = true
         } else {
+            // If it's on, turn it off;
             exportedWorker[setting] = false
         }
 
+        // Save the settings to the copy in memory;
         setSettings(exportedWorker);
 
+        // Save the settings to the async storage;
         await AsyncStorage.setItem('Settings', JSON.stringify(exportedWorker));
     }
 
@@ -76,10 +81,15 @@ export const SettingsScreen = () => {
                 onPress={() => { toggleSetting('scan-automatically')}}
                 
                 >
-                    <Focus style={StyleSheet.buttonImage} strokeWidth={2.5}/>
+                    <Focus style={StyleSheet.buttonImage} stroke="black" strokeWidth={2.5}/>
                     <Text style={Settings.text}>Scan Automatically</Text>
                     <CheckMark checked={SettingsWorker['scan-automatically']}/>
                 </Pressable>
+
+                {
+                    SettingsWorker['scan-automatically'] && 
+                    <Text>Identify items just by hovering your camera around it. You can always tap to gather more context. Increases mobile data usage.</Text>
+                }
             </Animated.View>
 
         </View>

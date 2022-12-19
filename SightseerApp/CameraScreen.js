@@ -7,6 +7,7 @@ import { BlurView, VibrancyView } from "@react-native-community/blur";
 import { LinearGradient } from 'expo-linear-gradient';
 import { automaticScan, startScan } from './scan/scan'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useIsFocused } from '@react-navigation/native';
 
 
 export default function CameraScreen({navigation}) {
@@ -15,27 +16,42 @@ export default function CameraScreen({navigation}) {
   const [statusText, setStatusText] = useState("Tap anywhere to scan");
   const [SettingsWorker, setSettings] = useState({});
   const [result, setResult] = useState({});
+  const [camera, setCamera] = useState(null);
+  const [lastCamera, setLastCamera] = useState(null);
+  const isFocused = useIsFocused();
+  // var camera;
 
-  var camera;
-
-  const SettingsRead = () => {
+  const SettingsRead = (camRef = null) => {
     AsyncStorage.getItem('Settings').then(async(value) => {
-      setSettings(value);
+      // Set the local settings from local storage.
+      setSettings(JSON.parse(value));
       const localSettings = JSON.parse(value);
-      // console.log(value["scan-automatically"] == true);
 
-      if (localSettings["scan-automatically"] == true) {
-        console.log("Settings status text...");
-        automaticScan(camera, setStatusText);
+      // Check if the camera is initialized
+      if (camera != null) {
+        // Check if the user has enabled automatic scanning
+        if (localSettings["scan-automatically"] == true) {
+          // Set the instruction text to notify the user that scanning is happening automatically
+          setStatusText("Scanning automatically. Tap for more context");
+          // Start the automatic scan
+          automaticScan(camRef, setStatusText);
+        }
       }
     })
-    // setSettings(JSON.parse(await AsyncStorage.getItem('Settings')));
-
   }
 
   useEffect(() => {
       SettingsRead();
   }, [])
+
+  useEffect(() => {
+    // When camera has been changed
+    if (camera != lastCamera) {
+      // When camera is initialized
+      setLastCamera(camera);
+      SettingsRead(camera);
+    }
+  }, [camera]);
 
   if (!permission) {
     // Camera permissions are still loading
@@ -56,6 +72,7 @@ export default function CameraScreen({navigation}) {
     setType(current => (current === CameraType.back ? CameraType.front : CameraType.back));
   }
   
+
   return (
     <View style={styles.container}>
       {/* <BlurView style={styles.statusBarBlur} blurType="light" blurAmount={8} /> */}
@@ -65,10 +82,10 @@ export default function CameraScreen({navigation}) {
       onPress={() => {
         startScan(camera, setStatusText, navigation);
       }}>
-        <Camera 
+        {isFocused && <Camera 
           style={styles.camera} 
           type={type} 
-          ref={(ref) => { camera = ref; }} 
+          ref={(ref) => { setCamera(ref); }} 
           >
           <View style={styles.buttonContainer}>
               <TouchableOpacity style={styles.settingsButton} onPress={() => { navigation.navigate("Settings") }}>
@@ -79,13 +96,17 @@ export default function CameraScreen({navigation}) {
           <LinearGradient colors={['rgba(0, 0, 0, 0)', 'rgba(0, 0, 0, 0.5)']} style={bottomBar.container}>
             <View>
               <Text style={bottomBar.barText}>{statusText}</Text>
+
+              {SettingsWorker["scan-automatically"] && 
+              <Text style={bottomBar.smallText}>Tap to gather more context</Text>}
+
             </View>
           </LinearGradient>
 
           <View>
 
           </View>
-        </Camera>
+        </Camera>}  
       </Pressable>
     </View>
   );
@@ -105,6 +126,11 @@ const bottomBar = StyleSheet.create({
     color: 'white',
     fontSize: 22,
     fontWeight: 'bold'
+  },
+  smallText: {
+    fontSize: 14,
+    color: "white",
+    textAlign: 'center',
   }
 })
 
