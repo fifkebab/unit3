@@ -8,7 +8,7 @@ import { ResutsScreen } from './ResultsScreen';
 
 const Stack = createNativeStackNavigator();
 
-export const Host = "https://b5a3-86-29-84-125.eu.ngrok.io";
+export const Host = "https://5ce8-62-241-179-124.eu.ngrok.io";
 
 const App = () => {
 

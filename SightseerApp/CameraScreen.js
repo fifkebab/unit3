@@ -40,6 +40,64 @@ export default function CameraScreen({navigation}) {
     })
   }
 
+  const bottomBar = StyleSheet.create({
+    container: {
+      bottom: 0,
+      height: 100,
+    },
+    barText: {
+      // here
+      textAlign: 'center',
+      color: 'white',
+      fontSize: 22,
+      fontWeight: 'bold'
+    },
+    smallText: {
+      fontSize: 14,
+      color: "white",
+      textAlign: 'center',
+    }
+  })
+  
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+    },
+    camera: {
+      flex: 1,
+    },
+    buttonContainer: {
+      flex: 1,
+      flexDirection: 'row',
+      width: 150,
+      backgroundColor: 'transparent',
+      marginStart: 15,
+    },
+    settingsButton: {
+      flex: 1,
+      alignSelf: 'flex-start',
+      alignItems: 'center',
+      backgroundColor: `rgba(0,0,0,${SettingsWorker['transparency'] ? 0.5 : 1})`,
+      padding: 10,
+      borderRadius: 10,
+      marginTop: (statusBarHeight + 20)
+    },
+    text: {
+      fontSize: 24,
+      fontWeight: 'bold',
+      color: 'white',
+    },
+    statusBarBlur: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      height: statusBarHeight,
+    }
+  });
+
+
   useEffect(() => {
       SettingsRead();
   }, [])
@@ -114,60 +172,3 @@ export default function CameraScreen({navigation}) {
 
 
 const statusBarHeight = getStatusBarHeight();
-
-const bottomBar = StyleSheet.create({
-  container: {
-    bottom: 0,
-    height: 100,
-  },
-  barText: {
-    // here
-    textAlign: 'center',
-    color: 'white',
-    fontSize: 22,
-    fontWeight: 'bold'
-  },
-  smallText: {
-    fontSize: 14,
-    color: "white",
-    textAlign: 'center',
-  }
-})
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  camera: {
-    flex: 1,
-  },
-  buttonContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    width: 150,
-    backgroundColor: 'transparent',
-    marginStart: 15,
-  },
-  settingsButton: {
-    flex: 1,
-    alignSelf: 'flex-start',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    padding: 10,
-    borderRadius: 10,
-    marginTop: (statusBarHeight + 20)
-  },
-  text: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: 'white',
-  },
-  statusBarBlur: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    height: statusBarHeight,
-  }
-});

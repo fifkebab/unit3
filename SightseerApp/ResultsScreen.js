@@ -49,6 +49,53 @@ export const ResutsScreen = ({navigation, route}) => {
         return settings;
     }
 
+    const styles = StyleSheet.create({
+        image: {
+            // flex: 1,
+            width: "100%",
+            height: "100%",
+            resizeMode: 'stretch',
+        },
+        button: {
+            backgroundColor: `rgba(0, 0, 0, ${SettingsWorker['transparency'] ? 0.5 : 1})`,
+            padding: 20,
+            marginLeft: 10,
+            marginRight: 10,
+            marginBottom: 2.5,
+            marginTop: 2.5,
+            borderRadius: 22,
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "flex-start",
+        },
+        uiFront: {
+            position: "absolute",
+            bottom: 0,
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "flex-end",
+        },
+        darkBackplate: {
+            backgroundColor: `rgba(0, 0, 0, ${SettingsWorker['transparency'] ? 0.5 : 1})`,
+            padding: 20,
+            margin: 10,
+            borderRadius: 22
+        },
+        largeText: {
+            fontSize: 30,
+            fontWeight: "bold",
+            color: "white"
+        },
+        buttonText: {
+            fontWeight: "bold",
+            color: "white",
+            fontSize: 18,
+            marginStart: 20
+        }
+    })
+
     const dictionary = {};
 
     const downloadDefinition = async(item) => {
@@ -140,52 +187,5 @@ const resultScreenStyle = StyleSheet.create({
     mainView: {
         flex: 1,
 
-    }
-})
-
-const styles = StyleSheet.create({
-    image: {
-        // flex: 1,
-        width: "100%",
-        height: "100%",
-        resizeMode: 'stretch',
-    },
-    button: {
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
-        padding: 20,
-        marginLeft: 10,
-        marginRight: 10,
-        marginBottom: 2.5,
-        marginTop: 2.5,
-        borderRadius: 22,
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "flex-start",
-    },
-    uiFront: {
-        position: "absolute",
-        bottom: 0,
-        width: "100%",
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "flex-end",
-    },
-    darkBackplate: {
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
-        padding: 20,
-        margin: 10,
-        borderRadius: 22
-    },
-    largeText: {
-        fontSize: 30,
-        fontWeight: "bold",
-        color: "white"
-    },
-    buttonText: {
-        fontWeight: "bold",
-        color: "white",
-        fontSize: 18,
-        marginStart: 20
     }
 })
