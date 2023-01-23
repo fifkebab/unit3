@@ -8,13 +8,18 @@ import { ResutsScreen } from './ResultsScreen';
 
 const Stack = createNativeStackNavigator();
 
-export const Host = "https://5ce8-62-241-179-124.eu.ngrok.io";
+// Reusable component for the app to connect with the server
+export const Host = "https://6910-86-29-84-125.eu.ngrok.io";
 
+// Start App
 const App = () => {
 
+  // Check settings are set
   const SettingsCheck = async() => {
     const Settings = await AsyncStorage.getItem('Settings');
     if (Settings == null) {
+
+      // Set default settings
       await AsyncStorage.setItem('Settings', JSON.stringify({
         'read-aloud': true,
         'high-contrast': false,
@@ -26,6 +31,7 @@ const App = () => {
   
   SettingsCheck();
 
+  // Display the app, as a stack navigator
   return (
     <NavigationContainer>
       <Stack.Navigator 

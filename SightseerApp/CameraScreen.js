@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { Button, Pressable, Settings, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
-import { BlurView, VibrancyView } from "@react-native-community/blur";
 import { LinearGradient } from 'expo-linear-gradient';
 import { automaticScan, startScan } from './scan/scan'
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -11,16 +10,25 @@ import { useIsFocused } from '@react-navigation/native';
 
 
 export default function CameraScreen({navigation}) {
+  // Set hooks
   const [type, setType] = useState(CameraType.back);
+  // Check if user has granted camera permissions, and request if not
   const [permission, requestPermission] = Camera.useCameraPermissions();
+  // Set instruction text
   const [statusText, setStatusText] = useState("Tap anywhere to scan");
+  // Create settings hook
   const [SettingsWorker, setSettings] = useState({});
+  // Create result hook for scan automatically
   const [result, setResult] = useState({});
+  // Create camera hook for reference later
   const [camera, setCamera] = useState(null);
+  // Create last camera hook for reference later
   const [lastCamera, setLastCamera] = useState(null);
+  // See if screen is active
   const isFocused = useIsFocused();
   // var camera;
 
+  // Function to intialise and load settings
   const SettingsRead = (camRef = null) => {
     AsyncStorage.getItem('Settings').then(async(value) => {
       // Set the local settings from local storage.
@@ -40,17 +48,21 @@ export default function CameraScreen({navigation}) {
     })
   }
 
+  // Style for this screen
   const bottomBar = StyleSheet.create({
     container: {
       bottom: 0,
       height: 100,
+      backgroundColor: SettingsWorker["transparency"] ? "transparent" : "black",
+      borderTopLeftRadius: 20,
+      borderTopRightRadius: 20,
     },
     barText: {
-      // here
       textAlign: 'center',
       color: 'white',
       fontSize: 22,
-      fontWeight: 'bold'
+      fontWeight: 'bold',
+      marginTop: 20,
     },
     smallText: {
       fontSize: 14,
@@ -78,6 +90,7 @@ export default function CameraScreen({navigation}) {
       flex: 1,
       alignSelf: 'flex-start',
       alignItems: 'center',
+      // Responds to the user's setting for transparency
       backgroundColor: `rgba(0,0,0,${SettingsWorker['transparency'] ? 0.5 : 1})`,
       padding: 10,
       borderRadius: 10,
@@ -87,26 +100,21 @@ export default function CameraScreen({navigation}) {
       fontSize: 24,
       fontWeight: 'bold',
       color: 'white',
-    },
-    statusBarBlur: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      height: statusBarHeight,
     }
   });
 
-
+  // Run once when screen loaded
   useEffect(() => {
+      // Load settings
       SettingsRead();
   }, [])
 
   useEffect(() => {
-    // When camera has been changed
+    // When camera has changed (just loaded in)
     if (camera != lastCamera) {
-      // When camera is initialized
+      // Assume camera is loaded and set Hooks.
       setLastCamera(camera);
+      // Reinitialise settings incase changed
       SettingsRead(camera);
     }
   }, [camera]);
@@ -126,6 +134,7 @@ export default function CameraScreen({navigation}) {
     );
   }
 
+  // Unused function, to toggle between front and back camera
   function toggleCameraType() {
     setType(current => (current === CameraType.back ? CameraType.front : CameraType.back));
   }
@@ -145,6 +154,8 @@ export default function CameraScreen({navigation}) {
           type={type} 
           ref={(ref) => { setCamera(ref); }} 
           >
+
+          {/* Settings Button */}
           <View style={styles.buttonContainer}>
               <TouchableOpacity style={styles.settingsButton} onPress={() => { navigation.navigate("Settings") }}>
                 <Text style={styles.text}>Settings</Text>
@@ -154,10 +165,6 @@ export default function CameraScreen({navigation}) {
           <LinearGradient colors={['rgba(0, 0, 0, 0)', 'rgba(0, 0, 0, 0.5)']} style={bottomBar.container}>
             <View>
               <Text style={bottomBar.barText}>{statusText}</Text>
-
-              {SettingsWorker["scan-automatically"] && 
-              <Text style={bottomBar.smallText}>Tap to gather more context</Text>}
-
             </View>
           </LinearGradient>
 

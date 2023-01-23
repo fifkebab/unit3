@@ -9,18 +9,22 @@ export const startScan = async(cameraRef, setScanText, navigation) => {
         console.log("Picture saved!");
         const imageResults = await sendImage(photo);
 
-        if (imageResults == false) {
+        if (!imageResults.captive) {
             setScanText("No internet connection.")
         } else {
-            setScanText("Scan complete!");
-            navigation.navigate("Results", {
-                photoUri: photo.uri,
-                photoDimensions: {
-                    width: photo.width,
-                    height: photo.height
-                },
-                imageResults: imageResults
-            })
+            if (!imageResults.items) {
+                setScanText("Nothing here");
+            } else {
+                setScanText("Scan complete!");
+                navigation.navigate("Results", {
+                    photoUri: photo.uri,
+                    photoDimensions: {
+                        width: photo.width,
+                        height: photo.height
+                    },
+                    imageResults: imageResults.items
+                })
+            }
         }
     }});
 }
@@ -42,15 +46,20 @@ export const automaticScan = (cameraRef, setScanText) => {
         // Send the photo to the server
         const imageResults = await sendImage(manipResult);
 
-        if (imageResults == false) {
+        if (!imageResults.captive) {
             // If there's no internet connection, display an error message, this is because the image results are false
             setScanText("No internet connection.")
         } else {
             // Display the results, and get only the names of the items
             // Speak the names of the items
-            const namesOnly = imageResults.map((item) => item.name);
-            setScanText(namesOnly.join(", "));
-            speakVoice("short", false, namesOnly.join(", "));
+            if (!imageResults.items) {
+                setScanText("Nothing found here");
+                speakVoice("short", false, "Nothing found here");
+            } else {
+                const namesOnly = imageResults.items.map((item) => item.name);
+                setScanText(namesOnly.join(", "));
+                speakVoice("short", false, namesOnly.join(", "));
+            }
         }
         setTimeout(() => {
             // Repeat the process every 2 seconds
@@ -69,7 +78,11 @@ const sendImage = async (image) => {
         // If the result isn't the same, the connection isn't secure, and the user is probably behind a captive portal
         alert("Connect to the internet and try again.");
         // Do not continue, it is unsafe
-        return false;
+        return {
+            captive: false,
+            response: false,
+            items: false
+        };
     }
 
     // Create a new formdata object
@@ -94,6 +107,14 @@ const sendImage = async (image) => {
         // Convert the data to a more managable format
         var newFormat = [];
     
+        if (Object.keys(data.class).length == 0) {
+            return {
+                captive: true,
+                response: true,
+                items: false
+            }
+        }
+
         Object.keys(data.class).forEach((item, index) => {
             newFormat.push({
                 "class": data.class[index],
@@ -108,6 +129,16 @@ const sendImage = async (image) => {
         })
 
         // Return the results
-        return newFormat
+        return {
+            captive: true,
+            response: true,
+            items: newFormat
+        }
+    } else {
+        return {
+            captive: true,
+            response: false,
+            items: false
+        }
     }
 }

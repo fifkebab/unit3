@@ -1,8 +1,9 @@
-import { Button, Pressable, Settings, StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native';
+import { Button, Pressable, Settings, StyleSheet, Text, TouchableOpacity, View, Image, Animated, Easing } from 'react-native';
 import { ChevronRight, Restart, Focus, Ear } from './images';
 import * as Speech from 'expo-speech';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { BlurView } from "expo-blur";
 
 function useForceUpdate(){
     const [value, setValue] = useState(0); // integer state
@@ -121,6 +122,18 @@ export const ResutsScreen = ({navigation, route}) => {
         // speakVoice();
     }
 
+    const animated = useRef(new Animated.Value(400)).current
+    const duration = 700;
+
+    useEffect(() => {
+            Animated.timing(animated, {
+            toValue: 0,
+            duration: duration,
+            easing: Easing.bezier(.13,.64,.45,1.16),
+            useNativeDriver: true,
+            }).start();
+    }, [animated]);
+
     useEffect(() => {
         SettingsRead();
     }, [])
@@ -146,11 +159,11 @@ export const ResutsScreen = ({navigation, route}) => {
                 height: parameters.photoDimensions.height
             }}>
             </Image>
-            <View style={styles.uiFront}>
-                    <View style={styles.darkBackplate}>
+            <Animated.View  style={{transform: [{ translateY: animated }], ...styles.uiFront}}>
+                    <BlurView style={styles.darkBackplate} intensity={60}>
                         <Text style={styles.largeText}>{currentItem.name}</Text>
                         <Text style={{ color: "white", fontSize: 18 }}>{dictionary[currentItem.name]}</Text>
-                    </View>
+                    </BlurView>
 
                     <View>
                         <TouchableOpacity style={styles.button} onPress={() => { incrementItemNumber(1) }}>
@@ -178,7 +191,7 @@ export const ResutsScreen = ({navigation, route}) => {
                             <Text style={styles.buttonText}>Scan another</Text>
                         </TouchableOpacity>
                     </View>
-            </View>
+            </Animated.View>
         </View>
     )
 }
