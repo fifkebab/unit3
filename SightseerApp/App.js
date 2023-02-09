@@ -9,7 +9,10 @@ import { ResutsScreen } from './ResultsScreen';
 const Stack = createNativeStackNavigator();
 
 // Reusable component for the app to connect with the server
-export const Host = "https://6910-86-29-84-125.eu.ngrok.io";
+export const bindHost = (path) => {
+  const host = "https://6910-86-29-84-125.eu.ngrok.io";
+  return host + path;
+}
 
 // Start App
 const App = () => {

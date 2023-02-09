@@ -1,4 +1,4 @@
-import { Host } from "../App";
+import { bindHost } from "../App";
 import { speakVoice } from "../ResultsScreen";
 import * as ImageManipulator from 'expo-image-manipulator';
 
@@ -71,7 +71,7 @@ export const automaticScan = (cameraRef, setScanText) => {
 
 const sendImage = async (image) => {
     // Check if the user is connected to the internet and not behind a captive portal
-    const captiveCheck = await fetch(`${Host}/`);
+    const captiveCheck = await fetch(bindHost("/"));
     const captiveData = await captiveCheck.text();
     
     if (captiveData != "Pong") {
@@ -91,7 +91,7 @@ const sendImage = async (image) => {
     formdata.append("file", { uri: image.uri, name: "image.jpg", type: "image/jpg" });
 
     // Start a new POST request to the server (REST API)
-    const request = await fetch(`${Host}/scan`, {
+    const request = await fetch(bindHost("/scan"), {
         method: 'POST',
         body: formdata,
         headers: {
