@@ -42,6 +42,7 @@ export const ResutsScreen = ({navigation, route}) => {
     const [itemNumber, setItemNumber] = useState(0);
     const [currentItem, setCurrentItem] = useState(parameters.imageResults[0]);
     const [SettingsWorker, setSettings] = useState({});
+    const [dictionary, setDictionary] = useState({});
     const [readAloud, setReadAloud] = useState(false);
 
     const SettingsRead = async(camRef = null) => {
@@ -97,18 +98,21 @@ export const ResutsScreen = ({navigation, route}) => {
         }
     })
 
-    const dictionary = {};
-
     const downloadDefinition = async(item) => {
-        const itemcurr = currentItem;
+        var itemcurr = currentItem;
         if (dictionary[itemcurr.name] == undefined) {
             console.log("Downloading definition");
-            const definitionRequest = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${currentItem.name}`)
+            const definitionRequest = await fetch(`https://en.wikipedia.org/w/api.php?titles=${currentItem.name}&action=query&prop=extracts&explaintext&format=json`)
             const data = await definitionRequest.json();
 
-            dictionary[itemcurr.name] = data[0].meanings[0].definitions[0].definition;
+            itemcurr.definition = data.query.pages[Object.keys(data.query.pages)[0]].extract.split(".")[0];
+            
+            parameters.imageResults[0][item] = itemcurr;
+
+            if (itemNumber == item) {
+                setCurrentItem(itemcurr);
+            }
         }
-        console.log(dictionary);
     }
 
     const incrementItemNumber = (increaseUnitNumber) => {
@@ -160,10 +164,10 @@ export const ResutsScreen = ({navigation, route}) => {
             }}>
             </Image>
             <Animated.View  style={{transform: [{ translateY: animated }], ...styles.uiFront}}>
-                    <BlurView style={styles.darkBackplate} intensity={60}>
+                    <View style={styles.darkBackplate}>
                         <Text style={styles.largeText}>{currentItem.name}</Text>
-                        <Text style={{ color: "white", fontSize: 18 }}>{dictionary[currentItem.name]}</Text>
-                    </BlurView>
+                        <Text style={{ color: "white", fontSize: 18 }}>{currentItem.definition}</Text>
+                    </View>
 
                     <View>
                         <TouchableOpacity style={styles.button} onPress={() => { incrementItemNumber(1) }}>

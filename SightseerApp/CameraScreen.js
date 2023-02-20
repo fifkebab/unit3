@@ -153,6 +153,9 @@ export default function CameraScreen({navigation}) {
           style={styles.camera} 
           type={type} 
           ref={(ref) => { setCamera(ref); }} 
+          onPress={() => {
+            startScan(camera, setStatusText, navigation);
+          }}
           >
 
           {/* Settings Button */}

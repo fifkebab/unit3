@@ -5,6 +5,8 @@ import * as ImageManipulator from 'expo-image-manipulator';
 export const startScan = async(cameraRef, setScanText, navigation) => {
     console.log("Scanning...");
     setScanText("Scanning...");
+
+    
     cameraRef.takePictureAsync({ onPictureSaved: async(photo) => {
         console.log("Picture saved!");
         const imageResults = await sendImage(photo);
@@ -73,7 +75,9 @@ const sendImage = async (image) => {
     // Check if the user is connected to the internet and not behind a captive portal
     const captiveCheck = await fetch(bindHost("/"));
     const captiveData = await captiveCheck.text();
-    
+
+    console.log(captiveData)
+
     if (captiveData != "Pong") {
         // If the result isn't the same, the connection isn't secure, and the user is probably behind a captive portal
         alert("Connect to the internet and try again.");

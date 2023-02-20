@@ -10,7 +10,7 @@ const Stack = createNativeStackNavigator();
 
 // Reusable component for the app to connect with the server
 export const bindHost = (path) => {
-  const host = "https://6910-86-29-84-125.eu.ngrok.io";
+  const host = "https://ffc5-86-29-84-125.eu.ngrok.io";
   return host + path;
 }
 
