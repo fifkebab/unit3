@@ -63,11 +63,21 @@ export default function CameraScreen({navigation}) {
       fontSize: 22,
       fontWeight: 'bold',
       marginTop: 20,
+      textShadowOffset: {
+        width: 0, height: 0
+      },
+      textShadowRadius: SettingsWorker['high-contrast'] ? 10 : 0,
+      textShadowColor: '#000',
     },
     smallText: {
       fontSize: 14,
       color: "white",
       textAlign: 'center',
+      textShadowOffset: {
+        width: 0, height: 0
+      },
+      textShadowRadius: SettingsWorker['high-contrast'] ? 10 : 0,
+      textShadowColor: '#000',
     }
   })
   
@@ -100,6 +110,11 @@ export default function CameraScreen({navigation}) {
       fontSize: 24,
       fontWeight: 'bold',
       color: 'white',
+      textShadowOffset: {
+        width: 0, height: 0
+      },
+      textShadowRadius: SettingsWorker['high-contrast'] ? 10 : 0,
+      textShadowColor: '#000',
     }
   });
 

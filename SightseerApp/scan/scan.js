@@ -18,6 +18,25 @@ export const startScan = async(cameraRef, setScanText, navigation) => {
                 setScanText("Nothing here");
             } else {
                 setScanText("Scan complete!");
+
+                for (const item of imageResults.items) {
+                    const query = item.name
+
+                    const searchImageReq = await fetch(bindHost(`/image/search?query=${query}`));
+                    const searchImageData = await searchImageReq.text();
+
+                    item["image"] = searchImageData;
+
+
+                    const definitionRequest = await fetch(`https://en.wikipedia.org/w/api.php?titles=${query}&action=query&prop=extracts&explaintext&format=json`)
+                    const definitionRequestData = await definitionRequest.json();
+
+                    item["definition"] = definitionRequestData.query.pages[Object.keys(definitionRequestData.query.pages)[0]].extract.split(".")[0];
+                    if (item["definition"].trim() == "") item["definition"] = "No definition found."
+
+                    item["name"] = definitionRequestData.query.pages[Object.keys(definitionRequestData.query.pages)[0]].title
+                }
+
                 navigation.navigate("Results", {
                     photoUri: photo.uri,
                     photoDimensions: {

@@ -83,37 +83,58 @@ export const ResutsScreen = ({navigation, route}) => {
             backgroundColor: `rgba(0, 0, 0, ${SettingsWorker['transparency'] ? 0.5 : 1})`,
             padding: 20,
             margin: 10,
-            borderRadius: 22
+            borderRadius: 22,
+            flexDirection: "row",
+            justifyContent: "space-between",
+        },
+        backplateImage: {
+            flex: 1,
+            maxWidth: 100,
+            aspectRatio: 1,
+            borderRadius: 12,
+            marginEnd: 20
         },
         largeText: {
             fontSize: 30,
             fontWeight: "bold",
-            color: "white"
+            color: "white",
+
+            textShadowOffset: {
+                width: 0, height: 0
+            },
+            textShadowRadius: SettingsWorker['high-contrast'] ? 10 : 0,
+            textShadowColor: '#000',
         },
         buttonText: {
             fontWeight: "bold",
             color: "white",
             fontSize: 18,
-            marginStart: 20
+            marginStart: 20,
+            
+            textShadowOffset: {
+                width: 0, height: 0
+            },
+            textShadowRadius: SettingsWorker['high-contrast'] ? 10 : 0,
+            textShadowColor: '#000',
         }
     })
 
-    const downloadDefinition = async(item) => {
-        var itemcurr = currentItem;
-        if (dictionary[itemcurr.name] == undefined) {
-            console.log("Downloading definition");
-            const definitionRequest = await fetch(`https://en.wikipedia.org/w/api.php?titles=${currentItem.name}&action=query&prop=extracts&explaintext&format=json`)
-            const data = await definitionRequest.json();
+    // const downloadDefinition = async(item) => {
+    //     var itemcurr = currentItem;
+    //     if (dictionary[itemcurr.name] == undefined) {
+    //         console.log("Downloading definition");
+    //         const definitionRequest = await fetch(`https://en.wikipedia.org/w/api.php?titles=${currentItem.name}&action=query&prop=extracts&explaintext&format=json`)
+    //         const data = await definitionRequest.json();
 
-            itemcurr.definition = data.query.pages[Object.keys(data.query.pages)[0]].extract.split(".")[0];
+    //         itemcurr.definition = data.query.pages[Object.keys(data.query.pages)[0]].extract.split(".")[0];
             
-            parameters.imageResults[0][item] = itemcurr;
+    //         parameters.imageResults[0][item] = itemcurr;
 
-            if (itemNumber == item) {
-                setCurrentItem(itemcurr);
-            }
-        }
-    }
+    //         if (itemNumber == item) {
+    //             setCurrentItem(itemcurr);
+    //         }
+    //     }
+    // }
 
     const incrementItemNumber = (increaseUnitNumber) => {
         var newNumber = itemNumber + increaseUnitNumber;
@@ -122,7 +143,7 @@ export const ResutsScreen = ({navigation, route}) => {
         }
         setItemNumber(newNumber);
         setCurrentItem(parameters.imageResults[newNumber]);
-        downloadDefinition(newNumber);
+        // downloadDefinition(newNumber);
         // speakVoice();
     }
 
@@ -152,7 +173,7 @@ export const ResutsScreen = ({navigation, route}) => {
 
     useEffect(() => {
         speakVoice("long", false, currentItem.name);
-        downloadDefinition(itemNumber);
+        // downloadDefinition(itemNumber);
     }, [currentItem]);
 
     return (
@@ -165,15 +186,33 @@ export const ResutsScreen = ({navigation, route}) => {
             </Image>
             <Animated.View  style={{transform: [{ translateY: animated }], ...styles.uiFront}}>
                     <View style={styles.darkBackplate}>
-                        <Text style={styles.largeText}>{currentItem.name}</Text>
-                        <Text style={{ color: "white", fontSize: 18 }}>{currentItem.definition}</Text>
+
+                        <Image
+                        style={styles.backplateImage}
+                        source={{
+                            uri: currentItem.image
+                        }}>
+                        </Image>
+
+                        <View 
+                        style={{
+                            flex: 1
+                        }}>
+
+                            <Text style={styles.largeText}>{currentItem.name}</Text>
+
+                            <Text style={{ color: "white", fontSize: 18 }} numberOfLines={3} ellipsizeMode='tail'>{currentItem.definition}</Text>
+
+                        </View>
+
                     </View>
 
                     <View>
+                        {(parameters.imageResults.length != 1) &&
                         <TouchableOpacity style={styles.button} onPress={() => { incrementItemNumber(1) }}>
                             <ChevronRight stroke="white" strokeWidth={2.5}/>
                             <Text style={styles.buttonText}>Next item</Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity>}
 
                         <TouchableOpacity style={styles.button} onPress={() => { speakVoice("short", true, currentItem.name) }}>
                             {readAloud && 

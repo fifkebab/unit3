@@ -2,9 +2,13 @@ from importlib.resources import path
 import torch
 import os
 import base64
+import requests
+import json
 
 from flask import Flask, redirect, request, url_for, send_file
 app = Flask(__name__)
+
+clientID = ""
 
 
 @app.route('/')
@@ -47,6 +51,29 @@ def upload_file():
 
         # Send the results back to the client
         return str(results.pandas().xyxy[0].to_json())
+
+
+@app.route("/image/search")
+def search_image():
+
+    # This endpoints works to get photos to the results screen.
+    with open("index.json", "r+", encoding="utf-8") as indexFile:
+        readIndexFile = json.loads(indexFile.read())
+        if (request.args.get('query') in readIndexFile):
+            return readIndexFile[request.args.get('query')]
+        else:
+            queryUrl = f"https://api.unsplash.com/search/photos?client_id={clientID}&query={request.args.get('query')}&per_page=1"
+            response = requests.get(queryUrl)
+            response_json = response.json()
+
+            newIndex = readIndexFile
+            newIndex[request.args.get(
+                'query')] = response_json['results'][0]['urls']['thumb']
+            indexFile.seek(0)
+            indexFile.write(json.dumps(newIndex))
+            indexFile.truncate()
+
+            return response_json['results'][0]['urls']['thumb']
 
 
 if __name__ == '__main__':
