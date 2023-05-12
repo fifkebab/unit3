@@ -201,7 +201,7 @@ export const ResutsScreen = ({navigation, route}) => {
 
                             <Text style={styles.largeText}>{currentItem.name}</Text>
 
-                            <Text style={{ color: "white", fontSize: 18 }} numberOfLines={3} ellipsizeMode='tail'>{currentItem.definition}</Text>
+                           {/* <Text style={{ color: "white", fontSize: 18 }} numberOfLines={3} ellipsizeMode='tail'>{currentItem.definition}</Text> */}
 
                         </View>
 

@@ -17,26 +17,28 @@ export const startScan = async(cameraRef, setScanText, navigation) => {
             if (!imageResults.items) {
                 setScanText("Nothing here");
             } else {
-                setScanText("Scan complete!");
-
+                
                 for (const item of imageResults.items) {
                     const query = item.name
-
+                    
                     const searchImageReq = await fetch(bindHost(`/image/search?query=${query}`));
                     const searchImageData = await searchImageReq.text();
-
+                    
                     item["image"] = searchImageData;
-
-
-                    const definitionRequest = await fetch(`https://en.wikipedia.org/w/api.php?titles=${query}&action=query&prop=extracts&explaintext&format=json`)
-                    const definitionRequestData = await definitionRequest.json();
-
-                    item["definition"] = definitionRequestData.query.pages[Object.keys(definitionRequestData.query.pages)[0]].extract.split(".")[0];
+                    
+                    
+                    // const definitionRequest = await fetch(`https://en.wikipedia.org/w/api.php?titles=${query}&action=query&prop=extracts&explaintext&format=json`)
+                    // const definitionRequestData = await definitionRequest.json();
+                    
+                    // item["definition"] = definitionRequestData.query.pages[Object.keys(definitionRequestData.query.pages)[0]].extract.split(".")[0];
+                    item["definition"] = "";
                     if (item["definition"].trim() == "") item["definition"] = "No definition found."
-
-                    item["name"] = definitionRequestData.query.pages[Object.keys(definitionRequestData.query.pages)[0]].title
+                    
+                    // item["name"] = definitionRequestData.query.pages[Object.keys(definitionRequestData.query.pages)[0]].title
+                    item["name"] = item["name"].charAt(0).toUpperCase() + item["name"].slice(1);
                 }
-
+                
+                setScanText("Tap anywhere to scan");
                 navigation.navigate("Results", {
                     photoUri: photo.uri,
                     photoDimensions: {

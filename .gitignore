@@ -9,6 +9,8 @@ SightseerApp/*.key
 SightseerApp/.mobileprovision
 SightseerApp/*.orig.*
 SightseerApp/web-build/
+cloudflared.exe
+
 
 # macOS
 .DS_Store

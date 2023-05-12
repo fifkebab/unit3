@@ -10,7 +10,7 @@ const Stack = createNativeStackNavigator();
 
 // Reusable component for the app to connect with the server
 export const bindHost = (path) => {
-  const host = "https://d06d-86-29-84-125.eu.ngrok.io";
+  const host = "https://hundreds-ebook-arrivals-simulation.trycloudflare.com";
   return host + path;
 }
 
@@ -40,9 +40,9 @@ const App = () => {
       <Stack.Navigator 
         screenOptions={{
             headerShown: false,
-            statusBarTranslucent: true,
-            statusBarColor: 'rgba(0,0,0,0.5)',
-            statusBarStyle: 'light'
+            // statusBarTranslucent: true,
+            // statusBarColor: 'rgba(0,0,0,0.5)',
+            // statusBarStyle: 'light'
         }}>
         <Stack.Screen
             name="Home"
